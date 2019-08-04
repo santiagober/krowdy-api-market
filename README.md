@@ -14,7 +14,9 @@ Aplicacion tipo MercadoLibre o Ebay donde los usuarios pueden: crear productos, 
 ### Primera clase:
 
 - Que es exactamente un API? :
+
 https://medium.com/@perrysetgo/what-exactly-is-an-api-69f36968a41f
 
 - Verbos(GET, POST, PUT, etc), HTTP, URLS, API REST explicado con ejemplos:
+
 https://code.tutsplus.com/tutorials/a-beginners-guide-to-http-and-rest--net-16340
