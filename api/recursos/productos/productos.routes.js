@@ -6,15 +6,19 @@ const productos = require('../../../db').productos;
 const productsRoutes = express.Router();
 
 const blueprintProducto = Joi.object().keys({
-  titulo: Joi.string().min(3).max(100).required(),
-  precio: Joi.number().precision(2).required(),
-  moneda: Joi.string().max(3).required(),
+  titulo: Joi.string().min(3).max(100).required().error(() => 'error en la propiedad título'),
+  precio: Joi.number().precision(2).strict().required().error(() => 'error en la propiedad precio'),
+  moneda: Joi.string().max(3).required().error(() => 'error en la propiedad moneda'),
 });
-
 function validateProducto(req, res, next) {
-  const joiResult = Joi.validate(req.body, blueprintProducto);
-  if (joiResult.error) { // TODO: Mejorar el mensaje de error.
-    res.status(400).send(`Has tenido un error en: ${joiResult.error}`);
+  const joiResult = Joi.validate(req.body, blueprintProducto,{abortEarly: false});
+  let err = []
+  if (joiResult.error) { // TODO: Mejorar el mensaje de error.    
+    joiResult.error.details.forEach(element => {
+      err.push({message: element.message,type:element.type,context: element.context})      
+    })
+    console.log(err)
+    res.status(400).send(err);
     return;
   }
   next();
