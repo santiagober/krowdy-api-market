@@ -2,6 +2,13 @@
 
 Aplicacion tipo MercadoLibre o Ebay donde los usuarios pueden: crear productos, modificarlos, borrarlos y visualizar productos de otros usuarios.
 
+## Como correr el proyecto:
+
+```
+npm install
+node index.js ó nodemon index.js
+```
+
 ## Tecnologias que usaremos:
 
 - Express
