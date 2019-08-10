@@ -6,28 +6,6 @@ const logger = require('../../utils/logger');
 
 const productsRoutes = express.Router();
 
-const blueprintProducto = Joi.object().keys({
-  titulo: Joi.string().min(3).max(100).required().error(() => 'Error: '),
-  precio: Joi.number().precision(2).strict().required().error(() => 'Error: '),
-  moneda: Joi.string().max(3).required().error(() => 'Error: '),
-});
-function validateProducto(req, res, next) {
-  const joiResult = Joi.validate(req.body, blueprintProducto,{abortEarly: false});
-  console.log(joiResult.error)
-  let err = []
-  let errorMessage = '';
-  if (joiResult.error) { // TODO: Mejorar el mensaje de error.    
-    joiResult.error.details.forEach(element => {
-      err.push({message: element.message,type:element.type,context: element.context})
-      errorMessage += `${element.message} ${element.context.label}, tipo de error: ${element.type}, el límite es: ${element.context.limit}, el valor a cambiar: ${element.context.value}\n`     
-    })
-    console.log(errorMessage)
-    res.status(400).send(errorMessage);
-    return;
-  }
-  next();
-}
-
 
 // /productos/productos
 productsRoutes.get('/', (req, res) => {
@@ -41,14 +19,21 @@ productsRoutes.post('/', validateProducto, (req, res) => {
   res.status(201).json(productoNuevo);
 });
 
-productsRoutes.get('/:id', (req, res) => {
+productsRoutes.get('/:id', (req, res) => {  
   // TODO: Implementar el 404
+  const id = req.params.id;
   let productoFilter;
   productos.forEach(producto => {
-    if (producto.id === req.params.id) {
+    if (producto.id === id) {
       productoFilter = producto;
     }
   });
+  const index = productos.findIndex(usuario => usuario.id === id);
+  if (index === -1) {
+    logger.error(`Se obtuvo el producto con id ${id}`);
+    res.status(404).send(`El producto no existe. Verifica id ${id}`);
+    return;
+  }  
   logger.info(`Se obtuvo el producto con id ${productoFilter.id}`);
   // productos.filter(producto => producto.id === req.params.id);
   res.json(productoFilter);
@@ -64,7 +49,17 @@ productsRoutes.put('/:id', validateProducto, (req, res) => {
       productoFilter = producto;
     }
   });
-
+  const indexID = productos.findIndex(usuario => usuario.id === id);
+  if (indexID === -1) {
+    logger.error(`Se obtuvo el producto con id ${id}`);
+    res.status(404).send(`El producto no existe. Verifica id ${id}`);
+    return;
+  }
+  // if(!productoFilter){
+  //   logger.error(`Se obtuvo el producto con id ${id}`);
+  //   res.status(404).send('No existe producto')
+  //   return
+  // }
   productos[index] = { ...productoFilter, ...req.body };
   res.json(productos[index]);
 });
@@ -78,11 +73,15 @@ productsRoutes.delete('/:id', (req, res) => {
     if (producto.id === id) {
       index = i;
       productoFilter = producto;
-    }
-    
+    } 
     
   });
-    
+  const indexID = productos.findIndex(usuario => usuario.id === id);
+   if (indexID === -1) {
+    logger.error(`Se obtuvo el producto con id ${id}`);
+    res.status(404).send(`El producto no existe. Verifica id ${id}`);
+    return;
+  }  
   productos.splice(index, 1);
   res.json(productoFilter);
 });
