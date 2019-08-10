@@ -4,6 +4,7 @@ const productos = [
     titulo: 'Zapato X',
     precio: 12.12,
     moneda: 'PEN',
+    owner: 'username',
 },
 {
     id: '0usfd0usdf0u9sdf9-8',
@@ -19,6 +20,9 @@ const productos = [
 },
 ];
 
+const usuarios = [];
+
 module.exports = {
   productos,
+  usuarios,
 }
