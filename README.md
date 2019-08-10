@@ -29,7 +29,8 @@ https://medium.com/@perrysetgo/what-exactly-is-an-api-69f36968a41f
 https://code.tutsplus.com/tutorials/a-beginners-guide-to-http-and-rest--net-16340
 
 
-- Por que es importante validar nuestros datos: 
+- Por que es importante validar nuestros datos:
+
 https://www.quora.com/Why-is-data-validation-important
 
 
