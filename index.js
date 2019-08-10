@@ -8,7 +8,7 @@ const productRouter = require('./api/recursos/productos/productos.routes');
 const usuariosRouter = require('./api/recursos/usuarios/usuarios.routes');
 
 const authJWT = require('./api/libs/auth');
-
+const tokenValidate = require('./api/libs/token.validate')
 const app = express();
 
 app.use(bodyParser.json()); // IMPORTANTE!!!
@@ -23,7 +23,7 @@ passport.use(authJWT);
 
 
 // passport.authenticate('jwt', { session: false });
-app.get('/', passport.authenticate('jwt', { session: false }), (request, response) => {
+app.get('/', tokenValidate, (request, response) => {
   
   console.log(request.user);
   logger.error('Se hizo peticion al /');
