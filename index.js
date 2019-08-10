@@ -13,7 +13,11 @@ const app = express();
 
 app.use(bodyParser.json()); // IMPORTANTE!!!
 // stream: message => logger.info(message.trim())
-app.use(morgan('common', { stream: logger.stream.write }));
+app.use(morgan('short', { 
+  stream: {
+    write: message => logger.info(message.trim()),
+  } 
+}));
 app.use(passport.initialize());
 
 app.use('/usuarios', usuariosRouter);
@@ -24,8 +28,6 @@ passport.use(authJWT);
 
 // passport.authenticate('jwt', { session: false });
 app.get('/', passport.authenticate('jwt', { session: false }), (request, response) => {
-  
-  console.log(request.user);
   logger.error('Se hizo peticion al /');
   response.send('Hello World');
 });
