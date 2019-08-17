@@ -29,6 +29,18 @@ https://medium.com/@perrysetgo/what-exactly-is-an-api-69f36968a41f
 https://code.tutsplus.com/tutorials/a-beginners-guide-to-http-and-rest--net-16340
 
 
+- Por que es importante validar nuestros datos:
+
+https://www.quora.com/Why-is-data-validation-important
+
+
+
+### Segunda clase:
+- https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec 
+- https://www.syslog-ng.com/community/b/blog/posts/why-logging-is-important
+- https://www.youtube.com/watch?v=o9hT7v0OLJc
+
+
 ### Tareas de la semana2 :
 
 * Agregar los loggers a los endpoints correspondiendes utilizando log.error, log.warn. log.info.
