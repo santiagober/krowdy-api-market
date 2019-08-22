@@ -1,89 +1,78 @@
 const express = require('express');
 const uuidv4 = require('uuid/v4');
+
+const tokenValidate = require('../../libs/tokenValidate');
 const validateProducto = require('./productos.validate');
+
+const productoController = require('./productos.controller');
+
 const productos = require('../../../db').productos;
-const logger = require('../../utils/logger');
+
+const passport = require('passport')
+const jwtAuthenticate = passport.authenticate('jwt', { session: false });
+
 
 const productsRoutes = express.Router();
-const tokenValidate = require('../../../api/libs/token.validate')
+
+const logger = require('../../utils/logger');
 
 // /productos/productos
-productsRoutes.get('/',tokenValidate ,(req, res) => {
+productsRoutes.get('/', jwtAuthenticate, (req, res) => {
+  console.log(req.user);
   logger.info('Se obtuvo todos los productos');
-  res.json(productos);
+  productoController.obtenerProductos()
+  .then((productos) => {
+    res.json(productos);
+  })
+  .catch((err) => {
+    res.status(500).send(`Algo ocurrio en la db.`)
+  })
+  
 });
 
-productsRoutes.post('/', tokenValidate ,validateProducto, (req, res) => {
-  const productoNuevo = { ...req.body, id: uuidv4() };
-  productos.push(productoNuevo);
-  res.status(201).json(productoNuevo);
+productsRoutes.post('/', [jwtAuthenticate, validateProducto], (req, res) => {
+  
+  const productoNuevo = { ...req.body, owner: req.user.username };
+  
+  productoController.crearProducto(productoNuevo)
+  .then((producto) => {
+    productos.push(producto);
+    res.status(201).json(producto);
+  })
+  .catch((error) => {
+    logger.error('Algo ocurrio en la db.')
+  })
 });
 
-productsRoutes.get('/:id', tokenValidate,(req, res) => {  
-  // TODO: Implementar el 404
-  const id = req.params.id;
-  let productoFilter;
-  productos.forEach(producto => {
-    if (producto.id === id) {
-      productoFilter = producto;
-    }
-  });
-  const index = productos.findIndex(productos => productos.id === id);
-  if (index === -1) {
-    logger.error(` No se encuentra el producto${id}`);
-    res.status(404).send(`El producto no existe. Verifica id ${id}`);
-    return;
-  }  
-  logger.info(`Se obtuvo el producto con id ${productoFilter.id}`);
-  // productos.filter(producto => producto.id === req.params.id);
-  res.json(productoFilter);
-});
-
-productsRoutes.put('/:id', [validateProducto,tokenValidate], (req, res) => {
-  const id = req.params.id;
-  let index;
-  let productoFilter;
-  productos.forEach((producto, i) => {
-    if (producto.id === id) {
-      index = i;
-      productoFilter = producto;
-    }
-  });
-  const indexID = productos.findIndex(productos => productos.id === id);
-  if (indexID === -1) {
-    logger.error(`No se encuentra el producto${id}`);
-    res.status(404).send(`El producto no existe. Verifica id ${id}`);
-    return;
+productsRoutes.get('/:id', async (req, res) => {
+  try {
+    const producto = await productoController.obtenerProducto(req.params.id);
+    logger.info(`Se obtuvo el producto con id ${producto.id}`);
+    res.json(producto);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(`Ocurrio algo en la db.`);
   }
-  // if(!productoFilter){
-  //   logger.error(`Se obtuvo el producto con id ${id}`);
-  //   res.status(404).send('No existe producto')
-  //   return
-  // }
-  productos[index] = { ...productoFilter, ...req.body };
-  res.json(productos[index]);
 });
 
-productsRoutes.delete('/:id', tokenValidate,(req, res) => {
+productsRoutes.put('/:id', validateProducto, async (req, res) => {
   const id = req.params.id;
-
-  let index;
-  let productoFilter;
-  productos.forEach((producto, i) => {
-    if (producto.id === id) {
-      index = i;
-      productoFilter = producto;
-    } 
-    
-  });
-  const indexID = productos.findIndex(productos => productos.id === id);
-   if (indexID === -1) {
-    logger.error(`No se encuentra el producto${id}`);
-    res.status(404).send(`El producto no existe. Verifica id ${id}`);
-    return;
-  }  
-  productos.splice(index, 1);
-  res.json(productoFilter);
+  try {
+    const productoModificado = await productoController.modificarProducto(id, req.body)  
+    res.json(productoModificado);
+  } catch (err) {
+    res.status(500).send(`Error en la db.`)
+  }
 });
-//hola masco
+
+productsRoutes.delete('/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const productoEliminado = await productoController.eliminarProducto(id);
+    res.json(productoEliminado);
+  } catch (err) {
+    res.status(500).send(`Ocurrio un error en la db.`); 
+  }
+});
+
 module.exports = productsRoutes;
