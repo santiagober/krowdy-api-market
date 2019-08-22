@@ -17,11 +17,10 @@ const productsRoutes = express.Router();
 const logger = require('../../utils/logger');
 
 // /productos/productos
-productsRoutes.get('/', jwtAuthenticate, (req, res) => {
-  console.log(req.user);
-  logger.info('Se obtuvo todos los productos');
+productsRoutes.get('/', (req, res) => {
   productoController.obtenerProductos()
   .then((productos) => {
+    logger.info('Se obtuvo todos los productos');
     res.json(productos);
   })
   .catch((err) => {

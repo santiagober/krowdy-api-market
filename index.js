@@ -13,14 +13,13 @@ const authJWT = require('./api/libs/auth');
 const app = express();
 
 
-
-mongoose.connect('mongodb://root:training@172.31.23.49:27017/training?authSource=admin', { useNewUrlParser: true });
+mongoose.connect('mongodb://127.0.0.1:27017/training', { useNewUrlParser: true });
 mongoose.connection.on('error', (error) => {
-  logger.error('Fallo la conexion!');
   logger.error(error);
-  process.exit(1); // MATAMOS MONGO 
-  //nayruth pide chocolate nomas
-})
+  logger.error('Fallo la conexion a mongodb');
+  process.exit(1);
+});
+
 
 app.use(bodyParser.json()); // IMPORTANTE!!!
 // stream: message => logger.info(message.trim())
