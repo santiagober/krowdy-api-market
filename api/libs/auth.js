@@ -8,7 +8,7 @@ const configJWT = {
 }
 
 let jwtStrategy = new passportJWT.Strategy(configJWT, (jwtPayload, next) => {
-  const usuarioLogeado = usuarios.filter(usuario => usuario.id === jwtPayload.id)
+  const usuarioLogeado = usuarios.filter(usuario => usuario.id === jwtPayload.id)[0]
   
   next(null, {
     id: usuarioLogeado.id,
