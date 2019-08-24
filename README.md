@@ -58,4 +58,12 @@ https://www.quora.com/Why-is-data-validation-important
 * Verificar que los endpoint no tengan bugs. (Por ejemplo si un usuario con el username Luis.Angel ya existe, no puede registrarse otra persona con el mismo username)(Verificar los flujos para ver si pueden haber otros bugs).
 
 
+## EVALUACION 
+1. Implementa un endpoint que pueda filtrar productos por alguna coincidencia en el nombre (por ejemplo si el search indica 'zap', deberias devolver todos* los productos que en su nombre contengan 'zap' por ejemplo 'zapato'), utilizando validaciones, autenticacion.
+
+* Ten en cuenta en grandes apliaciones como ebay o facebook, estas coincidencias contendrian millones de resultados, asi que tu respuesta podria ser demasiado grande, encuentra una forma de solucionar este problema.
+* Asi como este problema habran algunos otros, divierte pensando cuales serian y cubrelos! 
+
+
+
 
