@@ -6,6 +6,10 @@ const validateProducto = require('./productos.validate');
 
 const productoController = require('./productos.controller');
 
+const ProductoNoExiste = require('./productos.error').ProductoNoExiste;
+
+const procesarError = require('../../libs/errorHandler').procesarError;
+
 const productos = require('../../../db').productos;
 
 const passport = require('passport')
@@ -16,18 +20,15 @@ const productsRoutes = express.Router();
 
 const logger = require('../../utils/logger');
 
-// /productos/productos
-productsRoutes.get('/', (req, res) => {
-  productoController.obtenerProductos()
-  .then((productos) => {
-    logger.info('Se obtuvo todos los productos');
-    res.json(productos);
-  })
-  .catch((err) => {
-    res.status(500).send(`Algo ocurrio en la db.`)
-  })
-  
-});
+// /productos
+productsRoutes.get('/', procesarError((req, res) => {
+  console.log('DENTRO DEL PROCESO')
+  return productoController.obtenerProductos()
+    .then((productos) => {
+      logger.info('Se obtuvo todos los productos');
+      res.json(productos);
+    })
+}));
 
 productsRoutes.post('/', [jwtAuthenticate, validateProducto], (req, res) => {
   
@@ -43,16 +44,18 @@ productsRoutes.post('/', [jwtAuthenticate, validateProducto], (req, res) => {
   })
 });
 
-productsRoutes.get('/:id', async (req, res) => {
-  try {
-    const producto = await productoController.obtenerProducto(req.params.id);
-    logger.info(`Se obtuvo el producto con id ${producto.id}`);
-    res.json(producto);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send(`Ocurrio algo en la db.`);
-  }
-});
+productsRoutes.get('/:id', procesarError((req, res) => {
+  const id = req.params.id;
+  return productoController.obtenerProducto(id)
+    .then(producto => {
+      console.log('producto', producto);
+      if (!producto) throw new ProductoNoExiste(`El producto con id [${id}] no existe`);
+      res.json(producto);
+    })
+  logger.info(`Se obtuvo el producto con id ${producto.id}`);
+  res.json(producto);
+
+}));
 
 productsRoutes.put('/:id', validateProducto, async (req, res) => {
   const id = req.params.id;

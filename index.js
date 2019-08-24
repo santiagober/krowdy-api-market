@@ -9,7 +9,7 @@ const productRouter = require('./api/recursos/productos/productos.routes');
 const usuariosRouter = require('./api/recursos/usuarios/usuarios.routes');
 
 const authJWT = require('./api/libs/auth');
-
+const errorHandler = require('./api/libs/errorHandler');
 const app = express();
 
 
@@ -32,6 +32,9 @@ app.use(passport.initialize());
 
 app.use('/usuarios', usuariosRouter);
 app.use('/productos', productRouter);
+
+app.use(errorHandler.procesarErroresDeDB);
+app.use(errorHandler.catchResolver);
 
 passport.use(authJWT);
 
