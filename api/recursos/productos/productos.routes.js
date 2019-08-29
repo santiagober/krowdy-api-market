@@ -87,17 +87,17 @@ productsRoutes.delete('/:id', async (req, res) => {
 productsRoutes.post('/search',[jwtAuthenticate,validateProductoSearch], procesarError((req, res) => {
   return productoController.obtenerRegEx(req.body)
     .then(producto => {
-      client.messages
+      /*client.messages
       .create({
           body: 'Se hizo el search de productos',
           from: '+15202143363',
           to: '+51995566657'
       })
-  .then(message => console.log(message.sid))
-  .catch((error) => {
-    logger.error('Algo ocurrio con twilio.' + error)
-    console.log(error)
-  });
+      .then(message => console.log(message.sid))
+      .catch((error) => {
+        logger.error('Algo ocurrio con twilio.' + error)
+        console.log(error)
+      });*/
       if (!producto) throw new ProductoNoExiste(`No existen coincidencias!!!`);
       res.json(producto);
     })

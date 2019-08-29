@@ -9,6 +9,8 @@ const blueprintProducto = Joi.object().keys({
 const blueprintProductoSearch = Joi.object().keys({
   titulo: Joi.string().min(3).max(100).required(),
   tipo: Joi.number().required(),
+  page: Joi.number().required(),
+  limit: Joi.number().required(),
 });
 
 function validateProducto(req, res, next) {

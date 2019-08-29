@@ -19,9 +19,9 @@ function obtenerProducto(id,regex) {
 
 function obtenerRegEx(producto){
   //1: buscar que contenga // 2: buscar que terminen con// 3: buscar que comiencen con
-  if (producto.tipo === 1 ) { return Producto.find({titulo: {$regex: producto.titulo}}).limit(5).sort({"precio": "asc"}); }
-  if (producto.tipo === 2 ) { return Producto.find({titulo: {$regex: producto.titulo + '$'}}).limit(5).sort({"precio": "asc"}); }
-  if (producto.tipo === 3 ) { return Producto.find({titulo: {$regex: '^'+producto.titulo }}).limit(5).sort({"precio": "asc"}); }
+  if (producto.tipo === 1 ) { return Producto.find({titulo: {$regex: producto.titulo}}).skip((producto.page-1) * producto.limit).limit(producto.limit).sort({"precio": "asc"}); }
+  if (producto.tipo === 2 ) { return Producto.find({titulo: {$regex: producto.titulo + '$' }}).skip((producto.page-1) * producto.limit).limit(producto.limit).sort({"precio": "asc"}); }
+  if (producto.tipo === 3 ) { return Producto.find({titulo: {$regex: '^' + producto.titulo }}).skip((producto.page-1) * producto.limit).limit(producto.limit).sort({"precio": "asc"}); }
 }
 
 function modificarProducto(id, producto) {
