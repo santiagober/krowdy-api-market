@@ -15,8 +15,6 @@ const productos = require('../../../db').productos;
 
 const passport = require('passport')
 const authJWT = require('./../../libs/auth');
-const accountSid = 'ACabcf6fc1ac45141da728ec1ff5cb1189';
-const authToken = 'ce6ea871062c258e961c4953381d1e23';
 
 passport.use(authJWT);
 const jwtAuthenticate = passport.authenticate('jwt', { session: false });
@@ -25,7 +23,6 @@ const jwtAuthenticate = passport.authenticate('jwt', { session: false });
 const productsRoutes = express.Router();
 
 const logger = require('../../utils/logger');
-const client = require('twilio')(accountSid, authToken);
 
 // /productos
 productsRoutes.get('/', procesarError((req, res) => {
@@ -87,17 +84,6 @@ productsRoutes.delete('/:id', async (req, res) => {
 productsRoutes.post('/search',[jwtAuthenticate,validateProductoSearch], procesarError((req, res) => {
   return productoController.obtenerRegEx(req.body)
     .then(producto => {
-      /*client.messages
-      .create({
-          body: 'Se hizo el search de productos',
-          from: '+15202143363',
-          to: '+51995566657'
-      })
-      .then(message => console.log(message.sid))
-      .catch((error) => {
-        logger.error('Algo ocurrio con twilio.' + error)
-        console.log(error)
-      });*/
       if (!producto) throw new ProductoNoExiste(`No existen coincidencias!!!`);
       res.json(producto);
     })
