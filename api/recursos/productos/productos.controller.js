@@ -13,8 +13,15 @@ function obtenerProductos() {
   return Producto.find({});
 }
 
-function obtenerProducto(id) {
-  return Producto.findById(id);
+function obtenerProducto(id,regex) {
+    return Producto.findById(id); 
+}
+
+function obtenerRegEx(producto){
+  //1: buscar que contenga // 2: buscar que terminen con// 3: buscar que comiencen con
+  if (producto.tipo === 1 ) { return Producto.find({titulo: {$regex: producto.titulo}}).limit(5).sort({"precio": "asc"}); }
+  if (producto.tipo === 2 ) { return Producto.find({titulo: {$regex: producto.titulo + '$'}}).limit(5).sort({"precio": "asc"}); }
+  if (producto.tipo === 3 ) { return Producto.find({titulo: {$regex: '^'+producto.titulo }}).limit(5).sort({"precio": "asc"}); }
 }
 
 function modificarProducto(id, producto) {
@@ -33,4 +40,5 @@ module.exports = {
   obtenerProducto,
   modificarProducto,
   eliminarProducto,
+  obtenerRegEx,
 }

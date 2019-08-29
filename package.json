@@ -19,6 +19,7 @@
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
+    "twilio": "^3.33.4",
     "uuid": "^3.3.2",
     "winston": "^2.4.2"
   }
