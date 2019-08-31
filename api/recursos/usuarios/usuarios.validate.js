@@ -4,6 +4,8 @@ const Joi = require('@hapi/joi');
 const blueprintUsuario = Joi.object().keys({
   username: Joi.string().required(),
   password: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().regex(/^[+0-9]{1,15}$/).required(),
 });
 
 module.exports = (req, res, next) => {
